@@ -1,4 +1,4 @@
-﻿# HealthAPI
+# HealthAPI
 
 Bem-vindo à HealthAPI , um sistema simples de agendamento de consultas médicas .
 
