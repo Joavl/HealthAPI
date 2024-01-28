@@ -1,58 +1,68 @@
 # HealthAPI
 
-Bem-vindo à HealthAPI , um sistema simples de agendamento de consultas médicas .
+**Bem-vindo à HealthAPI, um sistema simples de agendamento de consultas médicas.**
 
-## Sobre o Projeto
+Este projeto é uma API desenvolvida em ASP.NET Core para permitir o **agendamento** de consultas médicas entre pacientes e médicos.
 
-Este projeto é uma API desenvolvida em ASP.NET Core para permitir o agendamento de consultas médicas entre pacientes e médicos.
+**Funcionalidades Principais**
 
-## Funcionalidades Principais
+* **Cadastro de Pacientes e Médicos**
+* **Agendamento de Consultas**
+* **Consulta de Agenda de Pacientes e Médicos**
 
-- Cadastro de Pacientes e Médicos
-- Agendamento de Consultas
-- Consulta de Agenda de Pacientes e Médicos
+**Tecnologias Utilizadas**
 
-## Tecnologias Utilizadas
+* ASP.NET Core
+* Entity Framework Core
+* SQL Server
 
-- ASP.NET Core
-- Entity Framework Core
-- SQL Server
-- JWT para autenticação básica
+**Configuração do Ambiente de Desenvolvimento**
 
-## Configuração do Ambiente de Desenvolvimento
+Para configurar o ambiente de desenvolvimento, siga estas etapas:
 
-Certifique-se de ter o [.NET Core SDK](https://dotnet.microsoft.com/download) instalado.
+1. Instale o .NET Core SDK.
+2. Clone o repositório: `git clone https://github.com/joavl/HealthAPI.git`
+3. Navegue até o diretório do projeto: `cd HealthAPI`
+4. Execute o aplicativo: `dotnet run`
 
-1. Clone o repositório: `git clone https://github.com/joavl/HealthAPI.git`
-2. Navegue até o diretório do projeto: `cd HealthAPI`
-3. Execute o aplicativo: `dotnet run`
+**Endpoints da API**
 
-## Endpoints da API
+A HealthAPI oferece os seguintes endpoints:
 
-- `GET /api/pacientes`: Obter a lista de pacientes.
-- `GET /api/medicos`: Obter a lista de médicos.
-- `POST /api/consultas`: Agendar uma nova consulta.
-- `GET /api/consultas`: Obter a lista de consultas.
-- `GET /api/consultas/{id}`: Obter detalhes de uma consulta específica.
+### Pacientes
 
-Consulte a documentação Swagger para obter mais detalhes.
+* `GET /api/pacientes`: Listar todos os pacientes.
+* `GET /api/pacientes/{id}`: Obter detalhes de um paciente específico.
+* `POST /api/pacientes`: Cadastrar um novo paciente.
+* `PUT /api/pacientes/{id}`: Atualizar as informações de um paciente existente.
+* `DELETE /api/pacientes/{id}`: Remover um paciente.
 
-## Autenticação
+### Médicos
 
-A API utiliza autenticação JWT. Ao fazer requisições, inclua o token JWT no cabeçalho `Authorization`.
+* `GET /api/medicos`: Listar todos os médicos.
+* `GET /api/medicos/{id}`: Obter detalhes de um médico específico.
+* `POST /api/medicos`: Cadastrar um novo médico.
+* `PUT /api/medicos/{id}`: Atualizar as informações de um médico existente.
+* `DELETE /api/medicos/{id}`: Remover um médico.
 
-## Documentação da API
+### Agendamentos
 
-A documentação da API está disponível no endpoint `/swagger`.
+* `GET /api/agendamentos`: Listar todos os agendamentos.
+* `GET /api/agendamentos/{id}`: Obter detalhes de um agendamento específico.
+* `POST /api/agendamentos`: Agendar um novo agendamento.
+* `PUT /api/agendamentos/{id}`: Atualizar as informações de um agendamento existente.
+* `DELETE /api/agendamentos/{id}`: Remover um agendamento.
 
-## Contribuições
+**Documentação da API**
+
+A documentação completa da API está disponível no endpoint `/swagger`.
+
+**Contribuições**
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
 
-## Licença
+**Licença**
 
-Este projeto é licenciado sob a licença [MIT](LICENSE).
+Este projeto é licenciado sob a licença MIT.
 
----
-
-**Desenvolvido por João Vitor Avila
+**Desenvolvido por João Vitor Ávila**
