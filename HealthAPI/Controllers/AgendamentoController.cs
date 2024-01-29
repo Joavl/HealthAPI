@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,58 +17,93 @@ public class AgendamentosController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<Agendamento>>> GetAgendamentos()
     {
-        var agendamentos = await _agendamentoService.ObterTodosAgendamentos();
-        return Ok(agendamentos);
+        try
+        {
+            var agendamentos = await _agendamentoService.ObterTodosAgendamentos();
+            return Ok(agendamentos);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Erro interno ao obter a lista de agendamentos", errorDetails = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Agendamento>> GetAgendamento(int id)
     {
-        var agendamento = await _agendamentoService.ObterAgendamentoPorId(id);
-
-        if (agendamento == null)
+        try
         {
-            return NotFound();
-        }
+            var agendamento = await _agendamentoService.ObterAgendamentoPorId(id);
 
-        return Ok(agendamento);
+            if (agendamento == null)
+            {
+                return NotFound(new { message = "Agendamento não encontrado", errorCode = 404 });
+            }
+
+            return Ok(agendamento);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Erro interno ao obter o agendamento", errorDetails = ex.Message });
+        }
     }
 
     [HttpPost]
-    public async Task<ActionResult<Agendamento>> PostAgendamento(Agendamento agendamento)
+    public async Task<ActionResult<Agendamento>> PostAgendamento([FromBody] Agendamento agendamento)
     {
-        await _agendamentoService.CriarAgendamento(agendamento);
-        return CreatedAtAction(nameof(GetAgendamento), new { id = agendamento.Id }, agendamento);
+        try
+        {
+            await _agendamentoService.CriarAgendamento(agendamento);
+            return CreatedAtAction(nameof(GetAgendamento), new { id = agendamento.Id }, agendamento);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Erro interno ao criar o agendamento", errorDetails = ex.Message });
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> PutAgendamento(int id, Agendamento agendamento)
+    public async Task<ActionResult> PutAgendamento(int id, [FromBody] Agendamento agendamento)
     {
-        if (id != agendamento.Id)
+        try
         {
-            return BadRequest("Ids não correspondem");
-        }
+            if (id != agendamento.Id)
+            {
+                return BadRequest(new { message = "Ids não correspondem", errorCode = 400 });
+            }
 
-        var agendamentoExistente = await _agendamentoService.ObterAgendamentoPorId(id);
-        if (agendamentoExistente == null)
+            var agendamentoExistente = await _agendamentoService.ObterAgendamentoPorId(id);
+            if (agendamentoExistente == null)
+            {
+                return NotFound(new { message = "Agendamento não encontrado", errorCode = 404 });
+            }
+
+            await _agendamentoService.AtualizarAgendamento(agendamento);
+            return Ok(new { message = "Agendamento atualizado com sucesso" });
+        }
+        catch (Exception ex)
         {
-            return NotFound("Agendamento não encontrado");
+            return StatusCode(500, new { message = "Erro interno ao atualizar o agendamento", errorDetails = ex.Message });
         }
-
-        await _agendamentoService.AtualizarAgendamento(agendamento);
-        return Ok("Agendamento atualizado com sucesso");
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAgendamento(int id)
     {
-        var agendamento = await _agendamentoService.ObterAgendamentoPorId(id);
-        if (agendamento == null)
+        try
         {
-            return NotFound("Agendamento não encontrado");
-        }
+            var agendamento = await _agendamentoService.ObterAgendamentoPorId(id);
+            if (agendamento == null)
+            {
+                return NotFound(new { message = "Agendamento não encontrado", errorCode = 404 });
+            }
 
-        await _agendamentoService.ExcluirAgendamento(id);
-        return Ok("Agendamento excluído com sucesso");
+            await _agendamentoService.ExcluirAgendamento(id);
+            return Ok(new { message = "Agendamento excluído com sucesso" });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Erro interno ao excluir o agendamento", errorDetails = ex.Message });
+        }
     }
 }

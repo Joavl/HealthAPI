@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 public class AgendamentoService
@@ -12,7 +12,6 @@ public class AgendamentoService
         _dbContext = dbContext;
     }
 
-    // Create
     public async Task CriarAgendamento(Agendamento agendamento)
     {
         var medicoExistente = await _dbContext.Medicos.FindAsync(agendamento.MedicoId);
@@ -26,7 +25,6 @@ public class AgendamentoService
         await _dbContext.SaveChangesAsync();
     }
 
-    // Read
     public async Task<Agendamento> ObterAgendamentoPorId(int agendamentoId)
     {
         return await _dbContext.Agendamentos
@@ -43,39 +41,34 @@ public class AgendamentoService
             .ToListAsync();
     }
 
-    // Update
     public async Task AtualizarAgendamento(Agendamento agendamento)
     {
+        var existingAgendamento = await _dbContext.Agendamentos
+            .Include(a => a.Medico)
+            .FirstOrDefaultAsync(a => a.Id == agendamento.Id);
+
+        if (existingAgendamento == null)
+        {
+            throw new InvalidOperationException("Agendamento não encontrado");
+        }
+
+        _dbContext.Entry(existingAgendamento).State = EntityState.Detached;
+        _dbContext.Agendamentos.Update(agendamento);
+
         try
         {
-            var existingAgendamento = await _dbContext.Agendamentos
-                .Include(a => a.Medico) 
-                .FirstOrDefaultAsync(a => a.Id == agendamento.Id);
-
-            if (existingAgendamento == null)
-            {
-                throw new InvalidOperationException("Agendamento não encontrado");
-            }
-
-            _dbContext.Entry(existingAgendamento).State = EntityState.Detached;
-
-            _dbContext.Agendamentos.Update(agendamento);
-
             await _dbContext.SaveChangesAsync();
         }
-        catch (Exception ex)
+        catch (DbUpdateConcurrencyException)
         {
-            Console.WriteLine($"Erro ao atualizar Agendamento: {ex.Message}");
-            throw;
+            throw new InvalidOperationException("Não foi possível atualizar os dados");
         }
     }
 
-
-
-    // Delete
     public async Task ExcluirAgendamento(int agendamentoId)
     {
         var agendamento = await _dbContext.Agendamentos.FindAsync(agendamentoId);
+
         if (agendamento != null)
         {
             _dbContext.Agendamentos.Remove(agendamento);

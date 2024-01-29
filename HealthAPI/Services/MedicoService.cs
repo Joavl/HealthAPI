@@ -13,14 +13,12 @@ public class MedicoService
         _dbContext = dbContext;
     }
 
-    // Create
     public async Task CriarMedico(Medico medico)
     {
         _dbContext.Medicos.Add(medico);
         await _dbContext.SaveChangesAsync();
     }
 
-    // Read
     public async Task<Medico> ObterMedicoPorId(int medicoId)
     {
         return await _dbContext.Medicos.FindAsync(medicoId);
@@ -31,36 +29,31 @@ public class MedicoService
         return await _dbContext.Medicos.ToListAsync();
     }
 
-    // Update
     public async Task AtualizarMedico(Medico medico)
     {
+        var existingMedico = await _dbContext.Medicos.FindAsync(medico.Id);
+
+        if (existingMedico == null)
+        {
+            throw new InvalidOperationException("Médico não encontrado");
+        }
+
+        _dbContext.Entry(existingMedico).CurrentValues.SetValues(medico);
+
         try
         {
-            var existingMedico = await _dbContext.Medicos.FindAsync(medico.Id);
-
-            if (existingMedico == null)
-            {
-                throw new InvalidOperationException("Médico não encontrado");
-            }
-
-            _dbContext.Entry(existingMedico).CurrentValues.SetValues(medico);
-
             await _dbContext.SaveChangesAsync();
         }
-        catch (Exception ex)
+        catch (DbUpdateConcurrencyException)
         {
-            Console.WriteLine($"Erro ao atualizar Médico: {ex.Message}");
-            throw;
+            throw new InvalidOperationException("Não foi possível atualizar"); ;
         }
     }
 
-
-
-
-    // Delete
     public async Task ExcluirMedico(int medicoId)
     {
         var medico = await _dbContext.Medicos.FindAsync(medicoId);
+
         if (medico != null)
         {
             _dbContext.Medicos.Remove(medico);
